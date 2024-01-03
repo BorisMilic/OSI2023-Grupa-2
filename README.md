@@ -1,1 +1,1 @@
-# OSI-2023_2024-Grupa-2
+# OSI2023-Grupa-2
