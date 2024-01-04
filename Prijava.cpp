@@ -77,6 +77,7 @@ int AdminBaza(const string& username, const string& sifra) {
 }
 void ProvjeraPostojanjaISifre(int postoji_admin) {
 	if (postoji_admin == 1) {
+		system("CLS");
 		cout << "Prijava uspjesna";
 		//administratorski dio
 	}
