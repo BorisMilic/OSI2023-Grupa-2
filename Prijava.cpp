@@ -6,11 +6,12 @@ using namespace std;
 void GlavniMeni();
 void UnosPodatakaZaPrijavu();
 int AdminBaza(const string& username, const string& sifra);
-void ProvjeraPostojanjaISifre(int postoji_admin);
+void ProvjeraPostojanjaISifre(int postoji);
 void AdminFunkcije();
+void PotvrdaOdjave();
+int tip_korisinika;
 void Prijava(){
 	int izbor;
-	int tip_korisinika;
 	do {
 		cout << "1. Prijava na sistem" << endl;
 		cout << "2. Povratak na glavni meni" << endl;
@@ -55,14 +56,17 @@ void Prijava(){
 	}
 }
 void UnosPodatakaZaPrijavu() {
+	int postoji;
 	string username;
 	cout << "Vas username: ";
 	cin >> username;
 	string sifra;
 	cout << "Vasa sifra: ";
 	cin >> sifra;
-	int postoji_admin = AdminBaza(username, sifra);
-	ProvjeraPostojanjaISifre(postoji_admin);
+	if (tip_korisinika == 4) {
+		postoji = AdminBaza(username, sifra);
+		ProvjeraPostojanjaISifre(postoji);
+	}
 }
 int AdminBaza(const string& username, const string& sifra) {
 	ifstream fajl("Admin.txt");
@@ -77,16 +81,16 @@ int AdminBaza(const string& username, const string& sifra) {
 	}
 	return 3;
 }
-void ProvjeraPostojanjaISifre(int postoji_admin) {
-	if (postoji_admin == 1) {
+void ProvjeraPostojanjaISifre(int postoji) {
+	if (postoji == 1) {
 		system("CLS");
-		int admin_izbor;
 		cout << "Prijava uspjesna" << endl;
 		Sleep(1000);
 		system("CLS");
+		if(tip_korisinika==4)
 		AdminFunkcije();
 	}
-	else if (postoji_admin == 2) {
+	else if (postoji == 2) {
 		system("CLS");
 		cout << "Unijeli ste pogresnu sifru" << endl;
 		Sleep(1000);
@@ -95,7 +99,7 @@ void ProvjeraPostojanjaISifre(int postoji_admin) {
 	}
 	else {
 		system("CLS");
-		cout << "Taj admin ne postoji" << endl;
+		cout << "Taj nalog ne postoji" << endl;
 		Sleep(1000);
 		system("CLS");
 		UnosPodatakaZaPrijavu();
@@ -108,22 +112,27 @@ void AdminFunkcije() {
 	cout << "Odaberite neku od administratorskih funkcija: ";
 	cin >> admin_izbor;
 	if (admin_izbor == 1) {
-		char potvrda_odjave;
-		do {
-			cout << "Da li ste sigurni da zelite da se odjavite sa sistema D/N? ";
-			cin >> potvrda_odjave;
-			if (potvrda_odjave == 'D') {
-				cout << "Uspjesno ste se odjavili sa sistema " << endl;
-				Sleep(1000);
-				system("CLS");
-				GlavniMeni();
-			}
-			else if (potvrda_odjave == 'N') {
-				system("CLS");
-				AdminFunkcije();
-			}
-			else
-				cout << "Izabrali ste pogresnu opciju" << endl;
-		} while (potvrda_odjave != 'D' && potvrda_odjave != 'N');
+		PotvrdaOdjave();
 	}
+}
+void PotvrdaOdjave() {
+	char potvrda_odjave;
+	do {
+		cout << "Da li ste sigurni da zelite da se odjavite sa sistema D/N? ";
+		cin >> potvrda_odjave;
+		if (potvrda_odjave == 'D') {
+			system("CLS");
+			cout << "Uspjesno ste se odjavili sa sistema " << endl;
+			Sleep(1000);
+			system("CLS");
+			GlavniMeni();
+		}
+		else if (potvrda_odjave == 'N') {
+			system("CLS");
+			if(tip_korisinika==4)
+			AdminFunkcije();
+		}
+		else
+			cout << "Izabrali ste pogresnu opciju" << endl;
+	} while (potvrda_odjave != 'D' && potvrda_odjave != 'N');
 }
