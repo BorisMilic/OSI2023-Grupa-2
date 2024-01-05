@@ -5,7 +5,7 @@
 using namespace std;
 void GlavniMeni();
 void UnosPodatakaZaPrijavu();
-int AdminBaza(const string& username, const string& sifra);
+int Baza(const string& username, const string& sifra);
 void ProvjeraPostojanjaISifre(int postoji);
 void AdminFunkcije();
 void PotvrdaOdjave();
@@ -63,23 +63,35 @@ void UnosPodatakaZaPrijavu() {
 	string sifra;
 	cout << "Vasa sifra: ";
 	cin >> sifra;
-	if (tip_korisinika == 4) {
-		postoji = AdminBaza(username, sifra);
-		ProvjeraPostojanjaISifre(postoji);
-	}
+	postoji = Baza(username, sifra);
+	ProvjeraPostojanjaISifre(postoji);
 }
-int AdminBaza(const string& username, const string& sifra) {
-	ifstream fajl("Admin.txt");
-	string _username, _sifra;
-	while (fajl) {
-		getline(fajl, _username, ';'); 
-		getline(fajl, _sifra); 
-		if (_username == username && _sifra == sifra)
-			return 1;
-		else if (_username == username && _sifra != sifra)
-			return 2;
+int Baza(const string& username, const string& sifra) {
+	if (tip_korisinika == 1) {
+		ifstream fajl("Klijent.txt");
+		//provjera baze klijenata
 	}
-	return 3;
+	if (tip_korisinika == 2) {
+		ifstream fajl("RadnikZaTehnicki.txt");
+		//provjera baze radnika za tehnicki pregled
+	}
+	if (tip_korisinika == 3) {
+		ifstream fajl("RadnikZaRegistraciju.txt");
+		//provjera baze radnika za registraciju
+	}
+	else {
+		ifstream fajl("Admin.txt");
+		string _username, _sifra;
+		while (fajl) {
+			getline(fajl, _username, ';');
+			getline(fajl, _sifra);
+			if (_username == username && _sifra == sifra)
+				return 1;
+			else if (_username == username && _sifra != sifra)
+				return 2;
+		}
+		return 3;
+	}
 }
 void ProvjeraPostojanjaISifre(int postoji) {
 	if (postoji == 1) {
