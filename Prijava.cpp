@@ -1,11 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include<Windows.h>
 #include "Korisnik.h"
 using namespace std;
 void GlavniMeni();
 void UnosPodatakaZaPrijavu();
 int AdminBaza(const string& username, const string& sifra);
 void ProvjeraPostojanjaISifre(int postoji_admin);
+void AdminFunkcije();
 void Prijava(){
 	int izbor;
 	int tip_korisinika;
@@ -78,17 +80,50 @@ int AdminBaza(const string& username, const string& sifra) {
 void ProvjeraPostojanjaISifre(int postoji_admin) {
 	if (postoji_admin == 1) {
 		system("CLS");
-		cout << "Prijava uspjesna";
-		//administratorski dio
+		int admin_izbor;
+		cout << "Prijava uspjesna" << endl;
+		Sleep(1000);
+		system("CLS");
+		AdminFunkcije();
 	}
 	else if (postoji_admin == 2) {
 		system("CLS");
 		cout << "Unijeli ste pogresnu sifru" << endl;
+		Sleep(1000);
+		system("CLS");
 		UnosPodatakaZaPrijavu();
 	}
 	else {
 		system("CLS");
 		cout << "Taj admin ne postoji" << endl;
+		Sleep(1000);
+		system("CLS");
 		UnosPodatakaZaPrijavu();
+	}
+}
+void AdminFunkcije() {
+	int admin_izbor;
+	cout << "1. Odjava " << endl;
+	//druge funkcije admina
+	cout << "Odaberite neku od administratorskih funkcija: ";
+	cin >> admin_izbor;
+	if (admin_izbor == 1) {
+		char potvrda_odjave;
+		do {
+			cout << "Da li ste sigurni da zelite da se odjavite sa sistema D/N? ";
+			cin >> potvrda_odjave;
+			if (potvrda_odjave == 'D') {
+				cout << "Uspjesno ste se odjavili sa sistema " << endl;
+				Sleep(1000);
+				system("CLS");
+				GlavniMeni();
+			}
+			else if (potvrda_odjave == 'N') {
+				system("CLS");
+				AdminFunkcije();
+			}
+			else
+				cout << "Izabrali ste pogresnu opciju" << endl;
+		} while (potvrda_odjave != 'D' && potvrda_odjave != 'N');
 	}
 }
