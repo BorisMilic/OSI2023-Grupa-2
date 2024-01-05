@@ -127,12 +127,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Admin.cpp" />
+    <ClCompile Include="Klijent.cpp" />
     <ClCompile Include="Korisnik.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Prijava.cpp" />
+    <ClCompile Include="RadnikZaRegistraciju.cpp" />
+    <ClCompile Include="RadnikZaTehnickiPregled.cpp" />
     <ClCompile Include="Registracija.cpp" />
+    <ClCompile Include="RegistracijaAdmin.cpp" />
     <ClCompile Include="RegistracijaKlijent.cpp" />
     <ClCompile Include="RegistracijaRadnici.cpp" />
+    <ClCompile Include="RegistracijaRadnici2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h" />

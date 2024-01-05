@@ -1,9 +1,13 @@
 #include <iostream>
 #include"Klijent.h"
+#include<Windows.h>
 using namespace std;
 void GlavniMeni();
 void KlijentPodaci();
 void RadnikPodaci();
+void RadnikPodaci2();
+void AdminPodaci();
+
 void Registracija(){
 	int izbor;
 	do {
@@ -23,16 +27,30 @@ void Registracija(){
 	if (izbor == 1) {
 		system("CLS");
 		KlijentPodaci();
+		Sleep(1000);
+		system("CLS");
+		GlavniMeni();
 	}
 	else if (izbor == 2) {
 		system("CLS");
 		RadnikPodaci();
+		Sleep(1000);
+		system("CLS");
+		GlavniMeni();
 	}
 	else if (izbor == 3) {
-
+		system("CLS");
+		RadnikPodaci2();
+		Sleep(1000);
+		system("CLS");
+		GlavniMeni();
 	}
 	else if (izbor == 4) {
-
+		system("CLS");
+		AdminPodaci();
+		Sleep(1000);
+		system("CLS");
+		GlavniMeni();
 	}
 	else if (izbor == 5) {
 		system("CLS");

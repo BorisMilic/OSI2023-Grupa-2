@@ -3,6 +3,7 @@
 #include<Windows.h>
 #include "Korisnik.h"
 using namespace std;
+
 void GlavniMeni();
 void UnosPodatakaZaPrijavu();
 int Baza(const string& username, const string& sifra);
@@ -10,6 +11,7 @@ void ProvjeraPostojanjaISifre(int postoji);
 void AdminFunkcije();
 void PotvrdaOdjave();
 int tip_korisinika;
+
 void Prijava(){
 	int izbor;
 	do {

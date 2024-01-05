@@ -5,13 +5,13 @@
 
 using namespace std;
 
-void RadnikPodaci() {
+void RadnikPodaci2() {
     string ime;
     string prezime;
     string username;
     string sifra;
 
-    cout << "Registracija radnika za tehnicki pregled" << endl;
+    cout << "Registracija radnika za registraciju vozila" << endl;
     cout << "Unesite ime: ";
     cin >> ime;
     cout << "Unesite prezime: ";
@@ -34,7 +34,7 @@ void RadnikPodaci() {
     if (potvrda == 'P' || potvrda == 'p') {
         ofstream outFile("neaktivni_nalozi.txt", ios::app);
         if (outFile.is_open()) {
-            outFile << "Radnik_za_Tehnicki_Pregled;" << ime << ";" << prezime << ";" << username << ";" << sifra << ";" << (novi.GetStatus() ? "0" : "1") << endl;
+            outFile << "Radnik_za_Registraciju;" << ime << ";" << prezime << ";" << username << ";" << sifra << ";" << (novi.GetStatus() ? "0" : "1") << endl;
             outFile.close();
             cout << "Nalog radnika ce biti kreiran nakon aktivacije." << endl;
         }

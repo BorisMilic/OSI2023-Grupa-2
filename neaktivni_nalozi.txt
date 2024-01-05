@@ -1,0 +1,7 @@
+Klijent;Marko;Markovic;mmarko001;sifra1234;0
+Radnik_za_Tehnicki_Pregled;Pero;Peric;radnikpero123;sifra543;0
+Radnik_za_Registraciju;Ivan;Ivanovic;iiivan99;ssddff;0
+Admin;filip;filipovic;admin12;kklllj;0
+Klijent;ugljesa;saric;ugljesa02;sifra12345;0
+Admin;aa;bb;admin133;lkkk;0
+Radnik_za_Registraciju;kk;oo;radnik1234;sdads;0

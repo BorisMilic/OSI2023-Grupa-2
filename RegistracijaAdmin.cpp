@@ -1,17 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include "Korisnik.h"
-#include "RadnikZaTehnickiPregled.h"
+#include "Admin.h"
 
 using namespace std;
 
-void RadnikPodaci() {
+void AdminPodaci() {
     string ime;
     string prezime;
     string username;
     string sifra;
 
-    cout << "Registracija radnika za tehnicki pregled" << endl;
+    cout << "Registracija admina" << endl;
     cout << "Unesite ime: ";
     cin >> ime;
     cout << "Unesite prezime: ";
@@ -21,7 +21,7 @@ void RadnikPodaci() {
     cout << "Unesite sifru: ";
     cin >> sifra;
 
-    RadnikTehnickiPregled novi;
+    Admin novi;
     novi.SetIme(ime);
     novi.SetPrezime(prezime);
     novi.SetSifra(sifra);
@@ -34,9 +34,9 @@ void RadnikPodaci() {
     if (potvrda == 'P' || potvrda == 'p') {
         ofstream outFile("neaktivni_nalozi.txt", ios::app);
         if (outFile.is_open()) {
-            outFile << "Radnik_za_Tehnicki_Pregled;" << ime << ";" << prezime << ";" << username << ";" << sifra << ";" << (novi.GetStatus() ? "0" : "1") << endl;
+            outFile << "Admin;" << ime << ";" << prezime << ";" << username << ";" << sifra << ";" << (novi.GetStatus() ? "0" : "1") << endl;
             outFile.close();
-            cout << "Nalog radnika ce biti kreiran nakon aktivacije." << endl;
+            cout << "Nalog admina ce biti kreiran nakon aktivacije." << endl;
         }
         else {
             cout << "Greska prilikom otvaranja datoteke." << endl;
