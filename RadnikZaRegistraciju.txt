@@ -1,2 +1,0 @@
-Petar;Petrovic;petar1;rad;1
-Nikola;Nikolic;nikola99;posao;1

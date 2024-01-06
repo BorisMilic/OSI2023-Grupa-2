@@ -3,6 +3,7 @@
 #include<Windows.h>
 #include <cstdlib>
 #include <sstream>
+#include< cstdlib >
 #include "Korisnik.h"
 using namespace std;
 
@@ -17,9 +18,11 @@ void AdminFunkcije();
 void PotvrdaOdjave();
 void prikazi_sadrzaj_datoteke();
 void aktiviraj_nalog();
-
-
+void RezervacijaTerminaZaTehnicki();
+void SacuvajTerminZaTehnicki(const string& datum, const string& vrijeme);
+bool ProvjeriZauzetostTerminaZaTehnicki(const string& _datum, const string& _vrijeme);
 int tip_korisinika;
+string username;
 
 void Prijava(){
 	int izbor;
@@ -71,7 +74,6 @@ void Prijava(){
 }
 void UnosPodatakaZaPrijavu() {
 	int postoji;
-	string username;
 	cout << "Vas username: ";
 	cin >> username;
 	string sifra;
@@ -360,11 +362,16 @@ void PotvrdaOdjave() {
 void KlijentFunkcije() {
 	int klijent_izbor;
 	cout << "1. Odjava " << endl;
+	cout << "2. Rezervacija termina za tehnicki pregled " << endl;
 	//druge funkcije klijenta
 	cout << "Odaberite neku od klijentskih funkcija: ";
 	cin >> klijent_izbor;
 	if (klijent_izbor == 1) {
 		PotvrdaOdjave();
+	}
+	else if (klijent_izbor == 2) {
+		system("CLS");
+		RezervacijaTerminaZaTehnicki();
 	}
 }
 void RadnikZaTehnickiPregledFunkcije() {
@@ -387,4 +394,80 @@ void RadnikZaRegistracijuFunkcije() {
 		PotvrdaOdjave();
 	}
 }
-
+void RezervacijaTerminaZaTehnicki() {
+	string datum;
+	string vrijeme;
+	cout << "Validni termini su puni sat i sat i pola, a vrijeme trajanja tehnickog pregleda je pola sata" << endl;
+	cout << "Unesite zeljeni datum za tehnicki pregled (D.M.G): ";
+	cin >> datum;
+	cout << "Unesite zeljenu satnicu za tehnicki pregled (S:M): ";
+	cin >> vrijeme;
+	if (vrijeme[size(vrijeme) - 2] == ':')
+		vrijeme.append("0");
+	int sati = stoi(vrijeme);
+	int minute;
+	istringstream(vrijeme.substr(size(vrijeme) - 2, size(vrijeme) - 1)) >> minute;
+	bool zauzet_termin = ProvjeriZauzetostTerminaZaTehnicki(datum, vrijeme);
+	if (zauzet_termin == true) {
+		system("CLS");
+		cout << "Taj termin za tehnicki pregled je vec zauzet, molimo odaberite drugi" << endl;
+		Sleep(1500);
+		system("CLS");
+		RezervacijaTerminaZaTehnicki();
+	}
+	else {
+		if ((sati < 8 || sati >= 15) || (minute != 0 && minute != 30)) {
+			system("CLS");
+			cout << "Unijeli ste satnicu izvan radnog vremena ili nevalidnu satnicu" << endl;
+			Sleep(2500);
+			system("CLS");
+			RezervacijaTerminaZaTehnicki();
+		}
+		else {
+			char potvrda;
+			cout << "Potvrdite unesene podatke (P/O): ";
+			cin >> potvrda;
+			if (potvrda == 'P' || potvrda == 'p')
+				SacuvajTerminZaTehnicki(datum, vrijeme);
+			else
+			{
+				system("CLS");
+				cout << "Rezervacija termina za tehnicki pregled je otkazana." << endl;
+				Sleep(1500);
+				system("CLS");
+				KlijentFunkcije();
+			}
+		}
+	}
+}
+void SacuvajTerminZaTehnicki(const string& datum, const string& vrijeme) {
+		ofstream outFile("ZakazaniTehnickiPregledi.txt", ios::app);
+		if (outFile.is_open())
+		{
+			outFile << username << ";" << datum << ";" << vrijeme << endl;
+			outFile.close();
+			system("CLS");
+			cout << "Vas termin za tehnicki pregled je uspjesno sacuvan." << endl;
+			Sleep(1500);
+			system("CLS");
+			KlijentFunkcije();
+		}
+		else
+		{
+			cout << "Greska prilikom otvaranja datoteke." << endl;
+		}
+	}
+bool ProvjeriZauzetostTerminaZaTehnicki(const string& _datum, const string& _vrijeme) {
+	ifstream file("ZakazaniTehnickiPregledi.txt");
+	string datum;
+	string username;
+	string vrijeme;
+	while (file) {
+		getline(file, username, ';');
+		getline(file, datum, ';');
+		getline(file, vrijeme);
+		if (datum == _datum && vrijeme == _vrijeme)
+			return true;
+	}
+	return false;
+}
