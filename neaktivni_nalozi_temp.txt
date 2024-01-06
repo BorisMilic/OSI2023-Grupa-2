@@ -1,2 +1,1 @@
 Radnik_za_Registraciju;jovo;jovic;jjovo;jovo123;0
-Klijent;Boris;Milic;b001;test;0

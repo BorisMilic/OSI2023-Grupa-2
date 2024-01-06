@@ -1,2 +1,3 @@
-Boris;Milic;boris1;neksifra;1
-Ugljesa;Saric;ugljesa02;testsifra;1
+ugljesa;saric;uglj02;sifra;0
+marko;markovic;mmarko;sifra12;0
+Boris;Milic;b001;test;0

@@ -1,2 +1,3 @@
-admin1;tester
-
+sistemski;administrator;admin1;tester
+novi;admin;admin2;test
+n;n;admin3;test3;0
