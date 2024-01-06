@@ -1,3 +1,4 @@
 C:\Users\user\Desktop\novi test\OSI2023-Grupa-2-main\x64\Debug\Softver za tehnički pregled i registraciju vozila.exe
 C:\Users\user\Desktop\nova verzija\x64\Debug\Softver za tehnički pregled i registraciju vozila.exe
 C:\Users\Boris\Desktop\najnovija verzija\x64\Debug\Softver za tehnički pregled i registraciju vozila.exe
+D:\ETF\II godina\OSI\OSI projekat\Kod\Softver za tehnički pregled i registraciju vozila\x64\Debug\Softver za tehnički pregled i registraciju vozila.exe

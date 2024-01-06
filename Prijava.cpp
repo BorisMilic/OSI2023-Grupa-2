@@ -8,6 +8,9 @@ void GlavniMeni();
 void UnosPodatakaZaPrijavu();
 int Baza(const string& username, const string& sifra);
 void ProvjeraPostojanjaISifre(int postoji);
+void KlijentFunkcije();
+void RadnikZaTehnickiPregledFunkcije();
+void RadnikZaRegistracijuFunkcije();
 void AdminFunkcije();
 void PotvrdaOdjave();
 int tip_korisinika;
@@ -39,13 +42,16 @@ void Prijava(){
 			}
 		}while (tip_korisinika < 1 || tip_korisinika>4);
 		if (tip_korisinika == 1) {
-
+			system("CLS");
+			UnosPodatakaZaPrijavu();
 		}
 		else if (tip_korisinika == 2) {
-
+			system("CLS");
+			UnosPodatakaZaPrijavu();
 		}
 		else if (tip_korisinika == 3) {
-
+			system("CLS");
+			UnosPodatakaZaPrijavu();
 		}
 		else if (tip_korisinika == 4) {
 			system("CLS");
@@ -71,15 +77,51 @@ void UnosPodatakaZaPrijavu() {
 int Baza(const string& username, const string& sifra) {
 	if (tip_korisinika == 1) {
 		ifstream fajl("Klijent.txt");
-		//provjera baze klijenata
+		string _username, _sifra;
+		string temp1, temp2;
+		while (fajl) {
+			getline(fajl, temp1, ';');
+			getline(fajl, temp2, ';');
+			getline(fajl, _username, ';');
+			getline(fajl, _sifra,';');
+			if (_username == username && _sifra == sifra)
+				return 1;
+			else if (_username == username && _sifra != sifra)
+				return 2;
+		}
+		return 3;
 	}
 	if (tip_korisinika == 2) {
 		ifstream fajl("RadnikZaTehnicki.txt");
-		//provjera baze radnika za tehnicki pregled
+		string _username, _sifra;
+		string temp1, temp2;
+		while (fajl) {
+			getline(fajl, temp1, ';');
+			getline(fajl, temp2, ';');
+			getline(fajl, _username, ';');
+			getline(fajl, _sifra, ';');
+			if (_username == username && _sifra == sifra)
+				return 1;
+			else if (_username == username && _sifra != sifra)
+				return 2;
+		}
+		return 3;
 	}
 	if (tip_korisinika == 3) {
 		ifstream fajl("RadnikZaRegistraciju.txt");
-		//provjera baze radnika za registraciju
+		string _username, _sifra;
+		string temp1, temp2;
+		while (fajl) {
+			getline(fajl, temp1, ';');
+			getline(fajl, temp2, ';');
+			getline(fajl, _username, ';');
+			getline(fajl, _sifra, ';');
+			if (_username == username && _sifra == sifra)
+				return 1;
+			else if (_username == username && _sifra != sifra)
+				return 2;
+		}
+		return 3;
 	}
 	else {
 		ifstream fajl("Admin.txt");
@@ -101,8 +143,14 @@ void ProvjeraPostojanjaISifre(int postoji) {
 		cout << "Prijava uspjesna" << endl;
 		Sleep(1000);
 		system("CLS");
-		if(tip_korisinika==4)
-		AdminFunkcije();
+		if (tip_korisinika == 1)
+			KlijentFunkcije();
+		if (tip_korisinika == 2)
+			RadnikZaTehnickiPregledFunkcije();
+		if (tip_korisinika == 3)
+			RadnikZaRegistracijuFunkcije();
+		if (tip_korisinika == 4)
+			AdminFunkcije();
 	}
 	else if (postoji == 2) {
 		system("CLS");
@@ -143,10 +191,46 @@ void PotvrdaOdjave() {
 		}
 		else if (potvrda_odjave == 'N') {
 			system("CLS");
-			if(tip_korisinika==4)
-			AdminFunkcije();
+			if (tip_korisinika == 1)
+				KlijentFunkcije();
+			if (tip_korisinika == 2)
+				RadnikZaTehnickiPregledFunkcije();
+			if (tip_korisinika == 3)
+				RadnikZaRegistracijuFunkcije();
+			if (tip_korisinika == 4)
+				AdminFunkcije();
 		}
 		else
 			cout << "Izabrali ste pogresnu opciju" << endl;
 	} while (potvrda_odjave != 'D' && potvrda_odjave != 'N');
+}
+void KlijentFunkcije() {
+	int klijent_izbor;
+	cout << "1. Odjava " << endl;
+	//druge funkcije klijenta
+	cout << "Odaberite neku od klijentskih funkcija: ";
+	cin >> klijent_izbor;
+	if (klijent_izbor == 1) {
+		PotvrdaOdjave();
+	}
+}
+void RadnikZaTehnickiPregledFunkcije() {
+	int radnik_za_tehnicki_pregled_izbor;
+	cout << "1. Odjava " << endl;
+	//druge funkcije radnika za tehnicki pregled
+	cout << "Odaberite neku od funkcija u vezi tehnickog pregleda: ";
+	cin >> radnik_za_tehnicki_pregled_izbor;
+	if (radnik_za_tehnicki_pregled_izbor == 1) {
+		PotvrdaOdjave();
+	}
+}
+void RadnikZaRegistracijuFunkcije() {
+	int radnik_za_registraciju_izbor;
+	cout << "1. Odjava " << endl;
+	//druge funkcije radnika za registraciju
+	cout << "Odaberite neku od funkcija u vezi registracije vozila: ";
+	cin >> radnik_za_registraciju_izbor;
+	if (radnik_za_registraciju_izbor == 1) {
+		PotvrdaOdjave();
+	}
 }

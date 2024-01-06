@@ -5,3 +5,7 @@ Admin;filip;filipovic;admin12;kklllj;0
 Klijent;ugljesa;saric;ugljesa02;sifra12345;0
 Admin;aa;bb;admin133;lkkk;0
 Radnik_za_Registraciju;kk;oo;radnik1234;sdads;0
+Klijent;Boris;Milic;boris01;test;0
+Radnik_za_Tehnicki_Pregled;Marki;Markovic;marko24;2024;0
+Radnik_za_Registraciju;Petar;Petrovic;petar05;nekasifra;0
+Admin;Pero;Peric;pero18;sifra9;0
