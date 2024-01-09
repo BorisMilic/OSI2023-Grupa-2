@@ -1,9 +1,12 @@
 #include <iostream>
 #include <fstream>
-#include<Windows.h>
+#include <Windows.h>
 #include <cstdlib>
 #include <sstream>
-#include< cstdlib >
+#include <cstdlib>
+#include <cstdio>
+#include <algorithm>
+#include <iomanip>
 #include "Korisnik.h"
 using namespace std;
 
@@ -21,6 +24,12 @@ void aktiviraj_nalog();
 void RezervacijaTerminaZaTehnicki();
 void SacuvajTerminZaTehnicki(const string& datum, const string& vrijeme);
 bool ProvjeriZauzetostTerminaZaTehnicki(const string& _datum, const string& _vrijeme);
+void OtkazivanjeTerminaZaTehnicki();
+void suspenduj_nalog();
+bool pronadji_i_suspenduj_nalog(const std::string& tip, const std::string& korisnicko_ime);
+void obrisi_nalog();
+bool pronadji_i_obrisi_nalog(const std::string& tip, const std::string& korisnicko_ime);
+
 int tip_korisinika;
 string username;
 
@@ -191,6 +200,7 @@ static void prikazi_sadrzaj_datoteke(const std::string& nazivDatoteke)
 	datoteka.close();
 }
 
+
 void aktiviraj_nalog()
 {
 	std::ifstream neaktivniNalozi("neaktivni_nalozi.txt");
@@ -211,7 +221,7 @@ void aktiviraj_nalog()
 	}
 
 	std::string trazeniUsername;
-	std::cout << "\nUnesite username koji zelite aktivirati (ili unesite KRAJ za zavrsetak): ";
+	std::cout << "\nUnesite username koji zelite aktivirati (ili unesite KRAJ za povratak na prethodni meni): ";
 
 	while (std::cin >> trazeniUsername && trazeniUsername != "KRAJ")
 	{
@@ -278,7 +288,8 @@ void aktiviraj_nalog()
 	}
 
 	system("CLS");
-	GlavniMeni();
+	AdminFunkcije();
+	//GlavniMeni();
 
 	neaktivniNalozi.close();
 	tempFile.close();
@@ -309,7 +320,8 @@ void AdminFunkcije()
 	}
 	else if (admin_izbor == 2)
 	{
-		cout << "\nNeaktivni nalozi:" << endl;
+		system("CLS");
+		cout << "Neaktivni nalozi:" << endl;
 		prikazi_sadrzaj_datoteke("neaktivni_nalozi.txt");
 		
 		aktiviraj_nalog();
@@ -318,11 +330,13 @@ void AdminFunkcije()
 	else if (admin_izbor == 3)
 	{
 		//susprendovanje naloga
+		suspenduj_nalog();
 	}
 
 	else if (admin_izbor == 4)
 	{
 		//brisanje naloga
+		obrisi_nalog();
 	}
 
 	else if (admin_izbor == 5)
@@ -363,6 +377,7 @@ void KlijentFunkcije() {
 	int klijent_izbor;
 	cout << "1. Odjava " << endl;
 	cout << "2. Rezervacija termina za tehnicki pregled " << endl;
+	cout << "3. Otkazivanje termina za tehnicki pregled " << endl;
 	//druge funkcije klijenta
 	cout << "Odaberite neku od klijentskih funkcija: ";
 	cin >> klijent_izbor;
@@ -373,15 +388,37 @@ void KlijentFunkcije() {
 		system("CLS");
 		RezervacijaTerminaZaTehnicki();
 	}
+	else if (klijent_izbor == 3) {
+		system("CLS");
+		OtkazivanjeTerminaZaTehnicki();
+	}
 }
 void RadnikZaTehnickiPregledFunkcije() {
 	int radnik_za_tehnicki_pregled_izbor;
 	cout << "1. Odjava " << endl;
+	cout << "2. Prikaz zakazanih termina " << endl;
 	//druge funkcije radnika za tehnicki pregled
 	cout << "Odaberite neku od funkcija u vezi tehnickog pregleda: ";
 	cin >> radnik_za_tehnicki_pregled_izbor;
 	if (radnik_za_tehnicki_pregled_izbor == 1) {
 		PotvrdaOdjave();
+	}
+	else if (radnik_za_tehnicki_pregled_izbor == 2)
+	{
+		char nazad;
+		system("CLS");
+		cout << "Pregled zakazanih tehnickih pregleda:" << endl;
+		prikazi_sadrzaj_datoteke("ZakazaniTehnickiPregledi.txt");
+		do {
+			cout << "Za povratak nazad pritisnite N: ";
+			cin >> nazad;
+			if (nazad != 'N' && nazad != 'n')
+				cout << "Izabrali ste nepostojecu opciju" << endl;
+		} while (nazad != 'N' && nazad != 'n');
+		if (nazad == 'N' || nazad == 'n') {
+			system("CLS");
+			RadnikZaTehnickiPregledFunkcije();
+		}
 	}
 }
 void RadnikZaRegistracijuFunkcije() {
@@ -470,4 +507,366 @@ bool ProvjeriZauzetostTerminaZaTehnicki(const string& _datum, const string& _vri
 			return true;
 	}
 	return false;
+}
+void OtkazivanjeTerminaZaTehnicki() {
+	string datum;
+	cout << "Unesite datum termina kojeg zelite otkazati (D.M.G): ";
+	cin >> datum;
+	string vrijeme;
+	cout << "Unesite satnicu termina koju zelite otkazati (S:M): ";
+	cin >> vrijeme;
+	char potvrda_otkazivanja;
+	cout << "Potvrdite otkazivanje (P/O): ";
+	cin >> potvrda_otkazivanja;
+	if (potvrda_otkazivanja == 'P' || potvrda_otkazivanja == 'p') {
+		//SacuvajTerminZaTehnicki(datum, vrijeme);
+		if (vrijeme[size(vrijeme) - 2] == ':')
+			vrijeme.append("0");
+		int sati = stoi(vrijeme);
+		int minute;
+		istringstream(vrijeme.substr(size(vrijeme) - 2, size(vrijeme) - 1)) >> minute;
+		if ((sati < 8 || sati >= 15) || (minute != 0 && minute != 30)) {
+			system("CLS");
+			cout << "Unijeli ste satnicu izvan radnog vremena ili nevalidnu satnicu" << endl;
+			Sleep(2500);
+			system("CLS");
+			OtkazivanjeTerminaZaTehnicki();
+		}
+		bool nema_termina = ProvjeriZauzetostTerminaZaTehnicki(datum, vrijeme);
+		if (nema_termina == false) {
+			system("CLS");
+			cout << "Nije moguce brisanje nepostojeceg termina" << endl;
+			Sleep(1500);
+			system("CLS");
+			OtkazivanjeTerminaZaTehnicki();
+		}
+		ifstream tehnicki_termini("ZakazaniTehnickiPregledi.txt");
+		string _username, _datum, _vrijeme;
+		int drugi_user = 0;
+		string stari_datum = "";
+		string staro_vrijeme = "";
+		if (tehnicki_termini.is_open()) {
+			ofstream novi_tehnicki_termini("temp.txt");
+			while (tehnicki_termini) {
+				getline(tehnicki_termini, _username, ';');
+				getline(tehnicki_termini, _datum, ';');
+				getline(tehnicki_termini, _vrijeme);
+				if (stari_datum.compare(_datum) != 0 && staro_vrijeme.compare(_vrijeme) != 0) {
+					if ((_datum.compare(datum) != 0 && _vrijeme.compare(vrijeme) != 0) || (_datum.compare(datum) == 0 && _vrijeme.compare(vrijeme) != 0) || (_datum.compare(datum) != 0 && _vrijeme.compare(vrijeme) == 0)) {
+						novi_tehnicki_termini << _username << ";" << _datum << ";" << _vrijeme << endl;
+					}
+					if (_username.compare(username) != 0 && _datum.compare(datum) == 0 && _vrijeme.compare(vrijeme) == 0) {
+						novi_tehnicki_termini << _username << ";" << _datum << ";" << _vrijeme << endl;
+						drugi_user = 1;
+					}
+				}
+				stari_datum = _datum;
+				staro_vrijeme = _vrijeme;
+			}
+			tehnicki_termini.close();
+			novi_tehnicki_termini.close();
+			remove("ZakazaniTehnickiPregledi.txt");
+			int preimenovan = rename("temp.txt", "ZakazaniTehnickiPregledi.txt");
+			if (preimenovan == 0 && drugi_user != 1) {
+				system("CLS");
+				cout << "Termin uspjesno obrisan";
+				Sleep(1500);
+				system("CLS");
+				KlijentFunkcije();
+			}
+			else {
+				system("CLS");
+				cout << "Odabrali ste termin drugog klijenta, unesite ponovo podatke";
+				Sleep(2000);
+				system("CLS");
+				OtkazivanjeTerminaZaTehnicki();
+			}
+		}
+		else
+			cout << "Fajl ne postoji";
+	}
+	else {
+		system("CLS");
+		KlijentFunkcije();
+	}
+}
+void suspenduj_nalog()
+{
+	int izbor;
+	std::string tip_naloga;
+
+	do
+	{
+
+		system("CLS");
+
+		std::cout << "Izaberite vrstu naloga za suspendovanje:" << std::endl;
+		std::cout << "1. Klijenti" << std::endl;
+		std::cout << "2. Radnici za tehnicki pregled" << std::endl;
+		std::cout << "3. Radnici za registraciju" << std::endl;
+		std::cout << "4. Admini" << std::endl;
+		std::cout << "5. Povratak na prethodni meni" << std::endl;
+		std::cout << "Izbor: ";
+		std::cin >> izbor;
+
+		switch (izbor)
+		{
+		case 1:
+			tip_naloga = "Klijent";
+			system("CLS");
+			cout << "Lista naloga klijenata koje mozete suspendovati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Klijent.txt");
+			break;
+		case 2:
+			tip_naloga = "Radnik_za_Tehnicki_Pregled";
+			system("CLS");
+			cout << "Lista naloga radnika za teh. pregled koje mozete suspendovati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Radnik_za_Tehnicki_Pregled.txt");
+			break;
+		case 3:
+			tip_naloga = "Radnik_za_Registraciju";
+			system("CLS");
+			cout << "Lista naloga radnika za registraciju koje mozete suspendovati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Radnik_za_Registraciju.txt");
+			break;
+		case 4:
+			tip_naloga = "Admin";
+			system("CLS");
+			cout << "Lista naloga admina koje mozete suspendovati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Admin.txt");
+			break;
+		case 5:
+			system("CLS");
+			AdminFunkcije();
+		default:
+			system("CLS");
+			std::cout << "Nevazeci izbor. Molimo izaberite ponovo." << std::endl;
+			suspenduj_nalog();
+			break;
+		}
+
+	} while (izbor < 1 || izbor > 5);
+
+
+	std::string korisnicko_ime;
+	std::cout << "\nUnesite username naloga koji zelite suspendovati (ili N za nazad): ";
+	std::cin >> korisnicko_ime;
+
+	if (korisnicko_ime == "N" || korisnicko_ime == "n")
+	{
+		system("CLS");
+		suspenduj_nalog();
+	}
+	else
+	{
+		if (pronadji_i_suspenduj_nalog(tip_naloga, korisnicko_ime))
+		{
+			std::cout << "\nNalog korisnika " << korisnicko_ime << " je suspendovan." << std::endl;
+			Sleep(2000);
+		}
+		else
+		{
+			std::cout << "\nNalog nije pronadjen ili se desila greska pri suspendovanju." << std::endl;
+			Sleep(2000);
+		}
+
+		system("CLS");
+		AdminFunkcije();
+	}
+}
+bool pronadji_i_suspenduj_nalog(const std::string& tip, const std::string& korisnicko_ime)
+{
+	std::ifstream ulazna_datoteka(tip + ".txt");
+	std::ofstream neaktivni_nalozi("neaktivni_nalozi.txt", std::ios::app);
+
+	if (!ulazna_datoteka.is_open() || !neaktivni_nalozi.is_open())
+	{
+		std::cerr << "Nemoguce otvoriti datoteke." << std::endl;
+		return false;
+	}
+
+	std::ofstream temp_datoteka(tip + "_temp.txt");
+
+	if (!temp_datoteka.is_open())
+	{
+		std::cerr << "Nemoguce otvoriti privremenu datoteku." << std::endl;
+		ulazna_datoteka.close();
+		neaktivni_nalozi.close();
+		return false;
+	}
+
+	std::string linija;
+	bool nalog_pronadjen = false;
+
+	while (std::getline(ulazna_datoteka, linija))
+	{
+		std::istringstream iss(linija);
+		std::string ime, prezime, username, sifra, tip_naloga;
+		int status;
+
+		std::getline(iss, ime, ';');
+		std::getline(iss, prezime, ';');
+		std::getline(iss, username, ';');
+		std::getline(iss, sifra, ';');
+		iss >> status; 
+
+		if (username == korisnicko_ime)
+		{
+			nalog_pronadjen = true;
+			neaktivni_nalozi << tip + ";" + ime + ";" + prezime + ";" + username + ";" + sifra + ";" + std::to_string(status) << std::endl;
+			//std::cout << linija << std::endl; 
+		}
+		else
+		{
+			temp_datoteka << linija << std::endl;
+		}
+	}
+
+	ulazna_datoteka.close();
+	temp_datoteka.close();
+	neaktivni_nalozi.close();
+
+	
+	if (std::remove((tip + ".txt").c_str()) != 0 || std::rename((tip + "_temp.txt").c_str(), (tip + ".txt").c_str()) != 0)
+	{
+		std::cerr << "Nemoguce ukloniti originalnu datoteku ili preimenovati privremenu datoteku." << std::endl;
+		return false;
+	}
+
+	return nalog_pronadjen;
+}
+
+void obrisi_nalog()
+{
+	int izbor;
+	std::string tip_naloga;
+
+	do
+	{
+
+		system("CLS");
+
+		std::cout << "Izaberite vrstu naloga za brisanje:" << std::endl;
+		std::cout << "1. Klijenti" << std::endl;
+		std::cout << "2. Radnici za tehnicki pregled" << std::endl;
+		std::cout << "3. Radnici za registraciju" << std::endl;
+		std::cout << "4. Admini" << std::endl;
+		std::cout << "5. Povratak na prethodni meni" << std::endl;
+		std::cout << "Izbor: ";
+		std::cin >> izbor;
+
+		switch (izbor)
+		{
+		case 1:
+			tip_naloga = "Klijent";
+			system("CLS");
+			cout << "Lista naloga klijenata koje mozete obrisati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Klijent.txt");
+			break;
+		case 2:
+			tip_naloga = "Radnik_za_Tehnicki_Pregled";
+			system("CLS");
+			cout << "Lista naloga radnika za teh. pregled koje mozete obrisati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Radnik_za_Tehnicki_Pregled.txt");
+			break;
+		case 3:
+			tip_naloga = "Radnik_za_Registraciju";
+			system("CLS");
+			cout << "Lista naloga radnika za registraciju koje mozete obrisati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Radnik_za_Registraciju.txt");
+			break;
+		case 4:
+			tip_naloga = "Admin";
+			system("CLS");
+			cout << "Lista naloga admina koje mozete obrisati:\n" << endl;
+			prikazi_sadrzaj_datoteke("Admin.txt");
+			break;
+		case 5:
+			system("CLS");
+			AdminFunkcije();
+		default:
+			system("CLS");
+			std::cout << "Nevazeci izbor. Molimo izaberite ponovo." << std::endl;
+			suspenduj_nalog();
+			break;
+		}
+
+	} while (izbor < 1 || izbor > 5);
+
+
+	std::string korisnicko_ime;
+	std::cout << "\nUnesite useername naloga koji zelite obrisati (ili N za nazad): ";
+	std::cin >> korisnicko_ime;
+
+	if (korisnicko_ime == "N" || korisnicko_ime == "n")
+	{
+		system("CLS");
+		obrisi_nalog();
+		//AdminFunkcije();
+	}
+	else
+	{
+		if (pronadji_i_obrisi_nalog(tip_naloga, korisnicko_ime))
+		{
+			std::cout << "\nNalog korisnika " << korisnicko_ime << " je obrisan." << std::endl;
+			Sleep(2000);
+		}
+		else
+		{
+			std::cout << "\nNalog nije pronadjen ili se desila greska pri brisanju." << std::endl;
+			Sleep(2000);
+		}
+
+		system("CLS");
+		AdminFunkcije();
+	}
+}
+
+bool pronadji_i_obrisi_nalog(const std::string& tip, const std::string& korisnicko_ime)
+{
+	std::ifstream ulazna_datoteka(tip + ".txt");
+	std::ofstream temp_datoteka(tip + "_temp.txt");
+
+	if (!ulazna_datoteka.is_open() || !temp_datoteka.is_open())
+	{
+		std::cerr << "Nemoguce otvoriti datoteke." << std::endl;
+		return false;
+	}
+
+	std::string linija;
+	bool nalog_pronadjen = false;
+
+	while (std::getline(ulazna_datoteka, linija))
+	{
+		std::istringstream iss(linija);
+		std::string ime, prezime, username, sifra;
+		int status;
+
+		std::getline(iss, ime, ';');
+		std::getline(iss, prezime, ';');
+		std::getline(iss, username, ';');
+		std::getline(iss, sifra, ';');
+		iss >> status;
+
+		if (username == korisnicko_ime)
+		{
+			nalog_pronadjen = true;
+
+		}
+		else
+		{
+			temp_datoteka << linija << std::endl;
+		}
+	}
+
+	ulazna_datoteka.close();
+	temp_datoteka.close();
+
+	if (std::remove((tip + ".txt").c_str()) != 0 || std::rename((tip + "_temp.txt").c_str(), (tip + ".txt").c_str()) != 0)
+	{
+		std::cerr << "Nemoguce ukloniti originalnu datoteku ili preimenovati privremenu datoteku." << std::endl;
+		return false;
+	}
+
+	return nalog_pronadjen;
 }

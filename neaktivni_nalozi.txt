@@ -1,2 +1,12 @@
-Radnik_za_Registraciju;jovo;jovic;jjovo;jovo123;0
+Radnik_za_Registraciju;jovo;jovanic;jjovo;jovo123;0
+Radnik_za_Tehnicki_Pregled;pero;peric;radnik3;sifra3;0
+Klijent;Jovo;Jovic;jovica;jovo123;0
 Klijent;Boris;Milic;b001;test;0
+Klijent;ugljesa;saric;uglj02;sifra;0
+Radnik_za_Tehnicki_Pregled;Boki;Milichius;b2015;testing123;0
+Radnik_za_Registraciju;Borki;Milich;b2018;testing;0
+Admin;sistemski1;administrator1;admin100;test;-858993460
+Klijent;Nikola;Petrovic;nidzo;testiranje;0
+Radnik_za_Tehnicki_Pregled;Igor;Milic;igi;pass;0
+Radnik_za_Registraciju;Pedja;Petrovic;pele;nekasifra;0
+Admin;Marko;Milic;KOR1;nekipass;0

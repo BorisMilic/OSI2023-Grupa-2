@@ -1,3 +1,1 @@
-igor;ig;radnik1;rad12;0
-janko;jankovic;radnik2;sifra2;0
-pero;peric;radnik3;sifra3;0
+Boki;Milichius;b2015;testing123;0
