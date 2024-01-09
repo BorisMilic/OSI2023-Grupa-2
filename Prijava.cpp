@@ -962,12 +962,8 @@ void BrisiKazne() {
 				break;
 			getline(kazne, _username, ';');
 			getline(kazne, iznos);
-			cout << iznos << " " << _username << endl;
-			Sleep(1500);
 			if (_username.compare(username) != 0 && _username.compare("") != 0)
 				temp_fajl << _username << ";" << iznos << endl;
-			//if (kazne.eof())
-				//break;
 		}
 		temp_fajl.close();
 		kazne.close();
