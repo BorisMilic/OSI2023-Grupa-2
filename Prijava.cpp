@@ -29,6 +29,8 @@ void suspenduj_nalog();
 bool pronadji_i_suspenduj_nalog(const std::string& tip, const std::string& korisnicko_ime);
 void obrisi_nalog();
 bool pronadji_i_obrisi_nalog(const std::string& tip, const std::string& korisnicko_ime);
+void PlacanjeKazni(const string& iznos);
+void BrisiKazne();
 
 int tip_korisinika;
 string username;
@@ -378,6 +380,7 @@ void KlijentFunkcije() {
 	cout << "1. Odjava " << endl;
 	cout << "2. Rezervacija termina za tehnicki pregled " << endl;
 	cout << "3. Otkazivanje termina za tehnicki pregled " << endl;
+	cout << "4. Onlajn placanje kazni " << endl;
 	//druge funkcije klijenta
 	cout << "Odaberite neku od klijentskih funkcija: ";
 	cin >> klijent_izbor;
@@ -391,6 +394,40 @@ void KlijentFunkcije() {
 	else if (klijent_izbor == 3) {
 		system("CLS");
 		OtkazivanjeTerminaZaTehnicki();
+	}
+	else if (klijent_izbor == 4) {
+		system("CLS");
+		int postoji_kazna = 0;
+		string _username;
+		string iznos;
+		string trazeni_iznos;
+		ifstream kazne("Kazne.txt");
+		if (kazne.is_open()) {
+			while (kazne)
+			{
+				getline(kazne, _username, ';');
+				getline(kazne, iznos);
+				if (username.compare(_username) == 0) {
+					postoji_kazna = 1;
+					trazeni_iznos = iznos;
+				}
+				if (kazne.eof())
+					break;
+			}
+			kazne.close();
+			if (postoji_kazna == 0) {
+				system("CLS");
+				cout << "Nemate neplacenih kazni ";
+				Sleep(1500);
+				system("CLS");
+				KlijentFunkcije();
+			}
+			else
+				PlacanjeKazni(trazeni_iznos);
+		}
+		else {
+			cout << "Greska prilikom otvaranja fajla";
+		}
 	}
 }
 void RadnikZaTehnickiPregledFunkcije() {
@@ -424,11 +461,28 @@ void RadnikZaTehnickiPregledFunkcije() {
 void RadnikZaRegistracijuFunkcije() {
 	int radnik_za_registraciju_izbor;
 	cout << "1. Odjava " << endl;
+	cout << "2. Prikaz klijenata sa neplacenim kaznama " << endl;
 	//druge funkcije radnika za registraciju
 	cout << "Odaberite neku od funkcija u vezi registracije vozila: ";
 	cin >> radnik_za_registraciju_izbor;
 	if (radnik_za_registraciju_izbor == 1) {
 		PotvrdaOdjave();
+	}
+	else if (radnik_za_registraciju_izbor == 2) {
+		char nazad;
+		system("CLS");
+		cout << "Pregled klijenata koji imaju neplacene kazne:" << endl;
+		prikazi_sadrzaj_datoteke("Kazne.txt");
+		do {
+			cout << "Za povratak nazad pritisnite N: ";
+			cin >> nazad;
+			if (nazad != 'N' && nazad != 'n')
+				cout << "Izabrali ste nepostojecu opciju" << endl;
+		} while (nazad != 'N' && nazad != 'n');
+		if (nazad == 'N' || nazad == 'n') {
+			system("CLS");
+			RadnikZaRegistracijuFunkcije();
+		}
 	}
 }
 void RezervacijaTerminaZaTehnicki() {
@@ -869,4 +923,57 @@ bool pronadji_i_obrisi_nalog(const std::string& tip, const std::string& korisnic
 	}
 
 	return nalog_pronadjen;
+}
+void PlacanjeKazni(const string& iznos) {
+	char potvrda;
+	int broj_kartice;
+	cout << "Imate " << iznos << " neplacenih kazni" << endl;
+	do {
+		cout << "Da li zelite da platite vase kazne D/N? ";
+		cin >> potvrda;
+		if (potvrda != 'D' && potvrda != 'N') {
+			cout << "Unijeli ste nepostojecu opciju" << endl;
+		}
+	} while ((potvrda != 'D' && potvrda != 'N'));
+	if (potvrda == 'D') {
+		cout << "Unesite broj kartice: ";
+		cin >> broj_kartice;
+		BrisiKazne();
+		system("CLS");
+		cout << "Placanje kazni izvrseno uspjesno";
+		Sleep(2000);
+		system("CLS");
+		KlijentFunkcije();
+	}
+	else if (potvrda == 'N') {
+		system("CLS");
+		KlijentFunkcije();
+	}
+}
+void BrisiKazne() {
+	ofstream temp_fajl("Kazne_temp.txt");
+	ifstream kazne("Kazne.txt");
+	string _username;
+	string iznos;
+	int preimenuj;
+	if (kazne.is_open()) {
+		while (kazne) {
+			if (kazne.eof())
+				break;
+			getline(kazne, _username, ';');
+			getline(kazne, iznos);
+			cout << iznos << " " << _username << endl;
+			Sleep(1500);
+			if (_username.compare(username) != 0 && _username.compare("") != 0)
+				temp_fajl << _username << ";" << iznos << endl;
+			//if (kazne.eof())
+				//break;
+		}
+		temp_fajl.close();
+		kazne.close();
+		remove("Kazne.txt");
+		preimenuj = rename("Kazne_temp.txt", "Kazne.txt");
+	}
+	else
+		cout << "Greska prilikom otvaranja fajla";
 }
