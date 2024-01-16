@@ -31,6 +31,10 @@ void obrisi_nalog();
 bool pronadji_i_obrisi_nalog(const std::string& tip, const std::string& korisnicko_ime);
 void PlacanjeKazni(const string& iznos);
 void BrisiKazne();
+void promijeni_sifru_klijenta(const string& username);
+void promijeni_sifru_radnika_za_r(const string& username);
+void promijeni_sifru_radnika_za_t(const string& username);
+void promijeni_sifru_admina(const string& username);
 
 int tip_korisinika;
 string username;
@@ -311,7 +315,7 @@ void AdminFunkcije()
 	cout << "2. Aktivacija naloga " << endl;
 	cout << "3. Suspendovanje naloga" << endl;
 	cout << "4. Brisanje naloga " << endl;
-	cout << "5. Ponistavanje sifre " << endl;
+	cout << "5. Promjena sifre " << endl;
 
 	//druge funkcije admina
 	cout << "Odaberite neku od administratorskih funkcija: ";
@@ -343,7 +347,13 @@ void AdminFunkcije()
 
 	else if (admin_izbor == 5)
 	{
-		//ponistavanje sifre
+		//promjena sifre
+		system("CLS");
+		cout << "Unesite sljedece podatke da biste promijenili sifru: " << endl;
+		string username;
+		cout << "Unesite korisnicko ime: ";
+		cin >> username;
+		promijeni_sifru_admina(username);
 	}
 }
 void PotvrdaOdjave() {
@@ -381,6 +391,7 @@ void KlijentFunkcije() {
 	cout << "2. Rezervacija termina za tehnicki pregled " << endl;
 	cout << "3. Otkazivanje termina za tehnicki pregled " << endl;
 	cout << "4. Onlajn placanje kazni " << endl;
+	cout << "5. Promjena sifre " << endl;
 	//druge funkcije klijenta
 	cout << "Odaberite neku od klijentskih funkcija: ";
 	cin >> klijent_izbor;
@@ -429,11 +440,23 @@ void KlijentFunkcije() {
 			cout << "Greska prilikom otvaranja fajla";
 		}
 	}
+
+	else if (klijent_izbor == 5)
+	{
+		//promjena sifre
+		system("CLS");
+		cout << "Unesite sljedece podatke da biste promijenili sifru: "<< endl;
+		string username;
+		cout << "Unesite korisnicko ime: ";
+		cin >> username;
+		promijeni_sifru_klijenta(username);
+	}
 }
 void RadnikZaTehnickiPregledFunkcije() {
 	int radnik_za_tehnicki_pregled_izbor;
 	cout << "1. Odjava " << endl;
 	cout << "2. Prikaz zakazanih termina " << endl;
+	cout << "3. Promjena sifre " << endl;
 	//druge funkcije radnika za tehnicki pregled
 	cout << "Odaberite neku od funkcija u vezi tehnickog pregleda: ";
 	cin >> radnik_za_tehnicki_pregled_izbor;
@@ -457,11 +480,22 @@ void RadnikZaTehnickiPregledFunkcije() {
 			RadnikZaTehnickiPregledFunkcije();
 		}
 	}
+	else if (radnik_za_tehnicki_pregled_izbor == 3)
+	{
+		//promjena sifre
+		system("CLS");
+		cout << "Unesite sljedece podatke da biste promijenili sifru: " << endl;
+		string username;
+		cout << "Unesite korisnicko ime: ";
+		cin >> username;
+		promijeni_sifru_radnika_za_t(username);
+	}
 }
 void RadnikZaRegistracijuFunkcije() {
 	int radnik_za_registraciju_izbor;
 	cout << "1. Odjava " << endl;
 	cout << "2. Prikaz klijenata sa neplacenim kaznama " << endl;
+	cout << "3. Promjena sifre " << endl;
 	//druge funkcije radnika za registraciju
 	cout << "Odaberite neku od funkcija u vezi registracije vozila: ";
 	cin >> radnik_za_registraciju_izbor;
@@ -483,6 +517,16 @@ void RadnikZaRegistracijuFunkcije() {
 			system("CLS");
 			RadnikZaRegistracijuFunkcije();
 		}
+	}
+
+	else if (radnik_za_registraciju_izbor == 3)
+	{
+		system("CLS");
+		cout << "Unesite sljedece podatke da biste promijenili sifru: " << endl;
+		string username;
+		cout << "Unesite korisnicko ime: ";
+		cin >> username;
+		promijeni_sifru_radnika_za_r(username);
 	}
 }
 void RezervacijaTerminaZaTehnicki() {
@@ -972,4 +1016,182 @@ void BrisiKazne() {
 	}
 	else
 		cout << "Greska prilikom otvaranja fajla";
+}
+
+void promijeni_sifru_klijenta(const string& username)
+{
+	ifstream inputFile("Klijent.txt");
+	ofstream outputFile("temp.txt");
+
+	if (!inputFile.is_open() || !outputFile.is_open())
+	{
+		cout << "Greska prilikom otvaranja datoteka." << endl;
+		return;
+	}
+
+	string ime, prezime, korisnickoIme, staraSifra, novaSifra;
+	bool pronaden = false;
+
+	
+	while (getline(inputFile, ime, ';') && getline(inputFile, prezime, ';') && getline(inputFile, korisnickoIme, ';') && getline(inputFile, staraSifra)) {
+		if (korisnickoIme == username)
+		{
+			pronaden = true;
+			cout << "Unesite novu sifru: ";
+			cin >> novaSifra;
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << novaSifra << endl;
+			cout << "Sifra uspjesno promijenjena." << endl;
+		}
+		else
+		{
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << staraSifra << endl;
+		}
+	}
+
+	inputFile.close();
+	outputFile.close();
+
+	remove("Klijent.txt");
+	rename("temp.txt", "Klijent.txt");
+
+	if (!pronaden) {
+		cout << "Korisnik s korisnickim imenom '" << username << "' nije pronadjen." << endl;
+	}
+
+	Sleep(1500);
+	system("CLS");
+	KlijentFunkcije();
+}
+
+void promijeni_sifru_radnika_za_r(const string& username)
+{
+	ifstream inputFile("Radnik_za_Registraciju.txt");
+	ofstream outputFile("temp1.txt");
+
+	if (!inputFile.is_open() || !outputFile.is_open())
+	{
+		cout << "Greska prilikom otvaranja datoteka." << endl;
+		return;
+	}
+
+	string ime, prezime, korisnickoIme, staraSifra, novaSifra;
+	bool pronaden = false;
+
+
+	while (getline(inputFile, ime, ';') && getline(inputFile, prezime, ';') && getline(inputFile, korisnickoIme, ';') && getline(inputFile, staraSifra))
+	{
+		if (korisnickoIme == username)
+		{
+			pronaden = true;
+			cout << "Unesite novu sifru: ";
+			cin >> novaSifra;
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << novaSifra << ";0" << endl;
+			cout << "Sifra uspjesno promijenjena." << endl;
+		}
+		else {
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << staraSifra << ";0" << endl;
+		}
+	}
+
+	inputFile.close();
+	outputFile.close();
+
+	remove("Radnik_za_Registraciju.txt");
+	rename("temp1.txt", "Radnik_za_Registraciju.txt");
+
+	if (!pronaden) {
+		cout << "Radnik s korisnickim imenom '" << username << "' nije pronadjen." << endl;
+	}
+
+	Sleep(1500);
+	system("CLS");
+	RadnikZaRegistracijuFunkcije();
+}
+
+void promijeni_sifru_radnika_za_t(const string& username)
+{
+	ifstream inputFile("Radnik_za_Tehnicki_Pregled.txt");
+	ofstream outputFile("temp2.txt");
+
+	if (!inputFile.is_open() || !outputFile.is_open())
+	{
+		cout << "Greska prilikom otvaranja datoteka." << endl;
+		return;
+	}
+
+	string ime, prezime, korisnickoIme, staraSifra, novaSifra;
+	bool pronaden = false;
+
+
+	while (getline(inputFile, ime, ';') && getline(inputFile, prezime, ';') && getline(inputFile, korisnickoIme, ';') && getline(inputFile, staraSifra)) {
+		if (korisnickoIme == username)
+		{
+			pronaden = true;
+			cout << "Unesite novu sifru: ";
+			cin >> novaSifra;
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << novaSifra << ";0" << endl;
+			cout << "Sifra uspjesno promijenjena." << endl;
+		}
+		else {
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << staraSifra << ";0" << endl;
+		}
+	}
+
+	inputFile.close();
+	outputFile.close();
+
+	remove("Radnik_za_Tehnicki_Pregled.txt");
+	rename("temp2.txt", "Radnik_za_Tehnicki_Pregled.txt");
+
+	if (!pronaden) {
+		cout << "Radnik s korisnickim imenom '" << username << "' nije pronadjen." << endl;
+	}
+
+	Sleep(1500);
+	system("CLS");
+	RadnikZaTehnickiPregledFunkcije();
+}
+
+void promijeni_sifru_admina(const string& username)
+{
+	ifstream inputFile("Admin.txt");
+	ofstream outputFile("temp3.txt");
+
+	if (!inputFile.is_open() || !outputFile.is_open())
+	{
+		cout << "Greska prilikom otvaranja datoteka." << endl;
+		return;
+	}
+
+	string ime, prezime, korisnickoIme, staraSifra, novaSifra;
+	bool pronaden = false;
+
+
+	while (getline(inputFile, ime, ';') && getline(inputFile, prezime, ';') && getline(inputFile, korisnickoIme, ';') && getline(inputFile, staraSifra)) {
+		if (korisnickoIme == username)
+		{
+			pronaden = true;
+			cout << "Unesite novu sifru: ";
+			cin >> novaSifra;
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << novaSifra << ";0" << endl;
+			cout << "Sifra uspjesno promijenjena." << endl;
+		}
+		else {
+			outputFile << ime << ";" << prezime << ";" << korisnickoIme << ";" << staraSifra << ";0" << endl;
+		}
+	}
+
+	inputFile.close();
+	outputFile.close();
+
+	remove("Admin.txt");
+	rename("temp3.txt", "Admin.txt");
+
+	if (!pronaden) {
+		cout << "Admin s korisnickim imenom '" << username << "' nije pronadjen." << endl;
+	}
+
+	Sleep(1500);
+	system("CLS");
+	AdminFunkcije();
 }
