@@ -1,2 +1,2 @@
-sistemski;administrator;admin1;tester
-sistemski1;administrator1;admin100;test;-858993460
+sistemski;administrator;admin1;tester;0
+sistemski1;administrator1;admin100;testiranje;0
