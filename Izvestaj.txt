@@ -1,4 +1,4 @@
 Spasen;Sukara;CentralOsiguranje;Banjaluka;1.1.2019;14:00;E12Z241;352552
 dgx;sgxb;esg;wrghwr;1.1.2019;14:00;wezewrh;3266
 Marko;Markovic;Central;Banjaluka;1.1.2024;12:00;E12O7357;436347s
-Boris;Milic;Central;Banjaluka;1.1.2017;11:00;/;12345
+Boris;Milic;Neskovic;KotorVaros;1.1.2018;10:00;/;123456

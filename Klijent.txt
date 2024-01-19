@@ -1,4 +1,4 @@
-Marko;Petrovic;marko;test123
+Marko;Petrovic;marko;test123;0
 Jovo;Jovic;jovica;jovo123;0
 Boris;Milic;b001;test;0
 Nikola;Petrovic;nidzo;testiranje;0

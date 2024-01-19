@@ -38,7 +38,7 @@ void promijeni_sifru_radnika_za_r(const string& username);
 void promijeni_sifru_radnika_za_t(const string& username);
 void promijeni_sifru_admina(const string& username);
 void popunjavanje_izvjestaja_tehnickog_pregleda();
-void prikazi_prethodne_registracije();
+//void prikazi_prethodne_registracije();
 void RezervacijaTerminaZaRegistraciju();
 void SacuvajTerminZaRegistraciju(const string& datum, const string& vrijeme);
 bool ProvjeriZauzetostTerminaZaRegistraciju(const string& _datum, const string& _vrijeme);
@@ -49,6 +49,8 @@ void ZavrsenaRegistracija(const string& datum, const string& vrijeme);
 void IzdavanjeTablica();
 double racunanje_cijene_registracije(string vrsta_vozila, double snaga_motora, double co2, int godina_proizvodnje, double tezina, string gorivo);
 void IzdavanjeStikera();
+void KlijentIstorijaRegistracija(string &ime, string &prezime, string &user);
+void KlijentIstorijaRegistracijaPrikaz(const string& ime, const string& prezime);
 
 int tip_korisinika;
 string username;
@@ -409,6 +411,7 @@ void KlijentFunkcije() {
 	cout << "6. Onlajn placanje kazni " << endl;
 	cout << "7. Promjena sifre " << endl;
 	cout << "8. Racunanje cijene registracije vozila " << endl;
+	cout << "9. Vase prethodne registracije " << endl;
 	//druge funkcije klijenta
 	cout << "Odaberite neku od klijentskih funkcija: ";
 	cin >> klijent_izbor;
@@ -526,6 +529,24 @@ void KlijentFunkcije() {
 		system("CLS");
 		KlijentFunkcije();
 	}
+	else if (klijent_izbor == 9) {
+		string ime, prezime, user;
+		char nazad;
+		system("CLS");
+		cout << "Istorija Vasih prethodnih registracija: " << endl;
+		KlijentIstorijaRegistracija(ime, prezime, user);
+		KlijentIstorijaRegistracijaPrikaz(ime, prezime);
+		do {
+			cout << "Za povratak nazad pritisnite N: ";
+			cin >> nazad;
+			if (nazad != 'N' && nazad != 'n')
+				cout << "Izabrali ste nepostojecu opciju" << endl;
+		} while (nazad != 'N' && nazad != 'n');
+		if (nazad == 'N' || nazad == 'n') {
+			system("CLS");
+			KlijentFunkcije();
+		}
+	}
 }
 void RadnikZaTehnickiPregledFunkcije() {
 	int radnik_za_tehnicki_pregled_izbor;
@@ -584,6 +605,7 @@ void RadnikZaRegistracijuFunkcije() {
 	cout << "6. Registracija vozila " << endl;
 	cout << "7. Izdavanje registracionih tablica " << endl;
 	cout << "8. Izdavanje registracionih stikera " << endl;
+	//cout << "9. Prikaz svih prethodnih registracija " << endl;
 	//druge funkcije radnika za registraciju
 	cout << "Odaberite neku od funkcija u vezi registracije vozila: ";
 	cin >> radnik_za_registraciju_izbor;
@@ -617,11 +639,25 @@ void RadnikZaRegistracijuFunkcije() {
 		promijeni_sifru_radnika_za_r(username);
 	}
 	else if (radnik_za_registraciju_izbor == 4) {
+		char nazad;
 		system("CLS");
+		cout << "Pregled svih prethodnih registracija: " << endl;
+		prikazi_sadrzaj_datoteke("PrethodneRegistracije.txt");
+		do {
+			cout << "Za povratak nazad pritisnite N: ";
+			cin >> nazad;
+			if (nazad != 'N' && nazad != 'n')
+				cout << "Izabrali ste nepostojecu opciju" << endl;
+		} while (nazad != 'N' && nazad != 'n');
+		if (nazad == 'N' || nazad == 'n') {
+			system("CLS");
+			RadnikZaRegistracijuFunkcije();
+		}
+		/*system("CLS");
 		prikazi_prethodne_registracije();
 		//Sleep(2000);
 		system("CLS");
-		RadnikZaRegistracijuFunkcije();
+		RadnikZaRegistracijuFunkcije();*/
 	}
 	else if (radnik_za_registraciju_izbor == 5) {
 		char nazad;
@@ -651,6 +687,22 @@ void RadnikZaRegistracijuFunkcije() {
 		system("CLS");
 		IzdavanjeStikera();
 	}
+	/*else if (radnik_za_registraciju_izbor == 9) {
+		char nazad;
+		system("CLS");
+		cout << "Pregled svih prethodnih registracija: " << endl;
+		prikazi_sadrzaj_datoteke("PrethodneRegistracije.txt");
+		do {
+			cout << "Za povratak nazad pritisnite N: ";
+			cin >> nazad;
+			if (nazad != 'N' && nazad != 'n')
+				cout << "Izabrali ste nepostojecu opciju" << endl;
+		} while (nazad != 'N' && nazad != 'n');
+		if (nazad == 'N' || nazad == 'n') {
+			system("CLS");
+			RadnikZaRegistracijuFunkcije();
+		}
+	}*/
 }
 void RezervacijaTerminaZaTehnicki() {
 	string datum;
@@ -1387,7 +1439,7 @@ void popunjavanje_izvjestaja_tehnickog_pregleda() {
 	cout << "\nUspjesno uneseni podaci o tehnickom pregledu. " << endl;
 	ZavrsenTehnicki(datum,vrijeme);
 }
-void prikazi_prethodne_registracije() {
+/*void prikazi_prethodne_registracije() {
 	ifstream prethodne_registracije_file("PrethodneRegistracije.txt");
 
 	if (!prethodne_registracije_file.is_open()) {
@@ -1411,7 +1463,7 @@ void prikazi_prethodne_registracije() {
 		cin >> nazad;
 	} while (nazad != 'N');
 	prethodne_registracije_file.close();
-}
+}*/
 void RezervacijaTerminaZaRegistraciju() {
 	string datum;
 	string vrijeme;
@@ -1631,7 +1683,7 @@ void  RegistracijaVozila() {
 	cin >> broj_sasije;
 
 	do {
-	cout << "Da li klijent prvi put registruje vozilo: ";
+		cout << "Da li klijent prvi put registruje vozilo: (D/N) ";
 	//getline(cin, broj_sasije);
 	cin >> prva_registracija;
 	} while (prva_registracija != "D" && prva_registracija != "N");
@@ -1666,7 +1718,14 @@ void  RegistracijaVozila() {
 
 		izvestaj.close();
 
-		cout << "\nUspjesno uneseni podaci o registraciji. " << endl;
+		ofstream cuvaj_registraciju("PrethodneRegistracije.txt",ios::app);
+		if (cuvaj_registraciju.is_open()) {
+			cuvaj_registraciju << ime_klijent << ";" << prezime_klijent << ";" << datum << endl;
+		}
+		else
+			cout << "Greska prilikom otvaranja fajla" << endl;
+
+		cout << "\nUspjesno obavljena registracija vozila. " << endl;
 		Sleep(2000);
 		system("CLS");
 		ZavrsenaRegistracija(datum, vrijeme);
@@ -1825,4 +1884,49 @@ void IzdavanjeStikera() {
 	}
 	system("CLS");
 	RadnikZaRegistracijuFunkcije();
+}
+void KlijentIstorijaRegistracija(string& ime, string& prezime, string& user) {
+	string ime_baza, prezime_baza, username_baza, temp1, temp2;
+	string stari_username = "/";
+	ifstream registracije("Klijent.txt");
+	if (registracije.is_open()) {
+		while (registracije) {
+			getline(registracije, ime_baza, ';');
+			getline(registracije, prezime_baza, ';');
+			getline(registracije, username_baza, ';');
+			getline(registracije, temp1, ';');
+			getline(registracije, temp2);
+			if (username_baza.compare(stari_username) == 0 || username.compare(username_baza) == 0)
+				break;
+			stari_username = username_baza;
+		}
+		registracije.close();
+		ime = ime_baza;
+		prezime = prezime_baza;
+		user = username_baza;
+	}
+	else {
+		cout << "Greska prilikom otvaranja fajla" << endl;
+	}
+}
+void KlijentIstorijaRegistracijaPrikaz(const string& ime, const string& prezime) {
+	ifstream istorija("PrethodneRegistracije.txt");
+	string ime_reg, prezime_reg, datum_reg;
+	string staro_prezime;
+	if (istorija.is_open()) {
+		while (istorija) {
+			getline(istorija, ime_reg, ';');
+			getline(istorija, prezime_reg, ';');
+			getline(istorija, datum_reg);
+			if (ime.compare(ime_reg) == 0 && prezime.compare(prezime_reg) == 0)
+				cout << ime_reg << " " << prezime_reg << " " << datum_reg << endl;
+			if (prezime_reg.compare(staro_prezime) == 0)
+				break;
+			staro_prezime = prezime_reg;
+		}
+		istorija.close();
+	}
+	else {
+		cout << "Greska prilikom otvaranja fajla" << endl;
+	}
 }
